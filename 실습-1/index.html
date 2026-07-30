@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의 운세</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #d4af7a;
+    --gold-bright: #f3d99a;
+    --purple: #7c5cff;
+    --purple-deep: #3a1f6b;
+    --bg-deep: #0a0716;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #1c1140 0%, #100a26 45%, #060412 100%);
+    color: #eae3ff;
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+  }
+
+  #stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: twinkle linear infinite;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.95; }
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px 60px;
+    text-align: center;
+  }
+
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    color: var(--gold-bright);
+    letter-spacing: 0.08em;
+    margin: 0 0 6px;
+    text-shadow: 0 0 18px rgba(243, 217, 154, 0.55), 0 0 40px rgba(124, 92, 255, 0.35);
+  }
+
+  .subtitle {
+    color: #b8adde;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 42px;
+  }
+
+  .scene {
+    perspective: 1400px;
+    width: 220px;
+    height: 340px;
+    margin-bottom: 34px;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(0.4, 0.2, 0.2, 1);
+  }
+
+  .card.flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card.shaking {
+    animation: shake 0.55s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    20% { transform: translateX(-8px) rotate(-3deg); }
+    40% { transform: translateX(8px) rotate(3deg); }
+    60% { transform: translateX(-6px) rotate(-2deg); }
+    80% { transform: translateX(6px) rotate(2deg); }
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 18px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(212, 175, 122, 0.55);
+  }
+
+  .face-back {
+    background:
+      repeating-linear-gradient(45deg, rgba(124,92,255,0.15) 0 2px, transparent 2px 14px),
+      linear-gradient(160deg, #241455 0%, #140a30 60%, #0a0620 100%);
+    box-shadow: 0 0 40px rgba(124, 92, 255, 0.35), inset 0 0 30px rgba(124, 92, 255, 0.25);
+  }
+
+  .face-back .glyph {
+    font-size: 3.4rem;
+    color: var(--gold-bright);
+    text-shadow: 0 0 20px rgba(243, 217, 154, 0.8);
+  }
+
+  .face-back .rune {
+    margin-top: 14px;
+    font-family: 'Cinzel Decorative', serif;
+    letter-spacing: 0.35em;
+    font-size: 0.75rem;
+    color: rgba(234, 227, 255, 0.55);
+  }
+
+  .face-front {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, #2c1a58 0%, #1a0f3d 55%, #0d0824 100%);
+    box-shadow: 0 0 45px rgba(212, 175, 122, 0.4), inset 0 0 25px rgba(212, 175, 122, 0.15);
+    padding: 18px;
+  }
+
+  .face-front .icon {
+    font-size: 3.6rem;
+    filter: drop-shadow(0 0 14px rgba(243, 217, 154, 0.75));
+  }
+
+  .face-front .card-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.15rem;
+    color: var(--gold-bright);
+    margin-top: 16px;
+    letter-spacing: 0.06em;
+  }
+
+  .face-front .card-name-en {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: rgba(234, 227, 255, 0.5);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  .fortune-panel {
+    max-width: 480px;
+    min-height: 90px;
+    background: rgba(28, 17, 64, 0.55);
+    border: 1px solid rgba(212, 175, 122, 0.3);
+    border-radius: 14px;
+    padding: 20px 26px;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #f1ebff;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    backdrop-filter: blur(4px);
+  }
+
+  .fortune-panel.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  button {
+    margin-top: 34px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    color: #12081f;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    border: none;
+    padding: 14px 34px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 0 24px rgba(243, 217, 154, 0.5);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 0 32px rgba(243, 217, 154, 0.75);
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: rgba(184, 173, 222, 0.4);
+    font-size: 0.8rem;
+    padding-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<main>
+  <h1>오늘의 운세</h1>
+  <p class="subtitle">마음을 가다듬고, 카드 한 장을 뽑아보세요</p>
+
+  <div class="scene">
+    <div class="card" id="card">
+      <div class="face face-back">
+        <div class="glyph">✦</div>
+        <div class="rune">M Y S T I C  T A R O T</div>
+      </div>
+      <div class="face face-front">
+        <div class="icon" id="cardIcon">✨</div>
+        <div class="card-name" id="cardName">카드 이름</div>
+        <div class="card-name-en" id="cardNameEn">Card Name</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fortune-panel" id="fortunePanel"></div>
+
+  <button id="drawBtn">운세 뽑기</button>
+</main>
+
+<footer>✦ 오늘의 운세는 재미로 봐주세요 ✦</footer>
+
+<script>
+  // 반짝이는 별 배경 생성
+  const starsContainer = document.getElementById('stars');
+  const STAR_COUNT = 90;
+  for (let i = 0; i < STAR_COUNT; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.left = Math.random() * 100 + 'vw';
+    star.style.top = Math.random() * 100 + 'vh';
+    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    star.style.animationDelay = (Math.random() * 4) + 's';
+    starsContainer.appendChild(star);
+  }
+
+  const CARDS = [
+    {
+      icon: '✨', name: '별', nameEn: 'The Star',
+      fortunes: [
+        '흐릿했던 길이 서서히 밝아옵니다. 지금의 노력이 곧 빛을 발할 거예요.',
+        '작은 희망 하나가 오늘 하루를 크게 바꿔놓을 수 있습니다.',
+        '지친 마음에 위로가 찾아오는 날. 스스로를 다독여주세요.'
+      ]
+    },
+    {
+      icon: '🌙', name: '달', nameEn: 'The Moon',
+      fortunes: [
+        '불안한 감정에 휘둘리기 쉬운 날이니, 중요한 결정은 잠시 미뤄두세요.',
+        '겉으로 보이는 것과 실제는 다를 수 있습니다. 직감을 믿되 서두르지 마세요.',
+        '숨겨둔 감정이 표면으로 떠오릅니다. 솔직해질 좋은 타이밍이에요.'
+      ]
+    },
+    {
+      icon: '☀️', name: '태양', nameEn: 'The Sun',
+      fortunes: [
+        '오늘은 모든 일이 순조롭게 풀리는 밝은 기운이 함께합니다.',
+        '주변 사람들과의 관계에서 따뜻한 온기를 느끼게 될 거예요.',
+        '자신감을 가지고 도전하면 좋은 결과가 따라옵니다.'
+      ]
+    },
+    {
+      icon: '🎡', name: '행운의 바퀴', nameEn: 'Wheel of Fortune',
+      fortunes: [
+        '예상치 못한 좋은 기회가 갑작스레 찾아올 수 있어요.',
+        '변화의 흐름을 거스르지 말고 자연스럽게 몸을 맡겨보세요.',
+        '지금까지의 흐름이 뒤바뀌는 전환점이 될 하루입니다.'
+      ]
+    },
+    {
+      icon: '💞', name: '연인', nameEn: 'The Lovers',
+      fortunes: [
+        '소중한 사람과의 관계가 한층 깊어지는 계기가 생길 거예요.',
+        '선택의 갈림길에서 마음이 이끄는 방향을 따라가 보세요.',
+        '진심 어린 대화가 오늘 관계의 열쇠가 됩니다.'
+      ]
+    },
+    {
+      icon: '🔮', name: '마법사', nameEn: 'The Magician',
+      fortunes: [
+        '가진 능력과 자원을 십분 활용하면 원하는 것을 이룰 수 있어요.',
+        '새로운 아이디어가 떠오르면 주저하지 말고 바로 행동으로 옮기세요.',
+        '오늘의 당신은 스스로 운을 만들어낼 힘을 가지고 있습니다.'
+      ]
+    },
+    {
+      icon: '🌍', name: '세계', nameEn: 'The World',
+      fortunes: [
+        '한 가지 일을 완성하고 성취감을 느끼게 되는 날입니다.',
+        '노력해온 과정이 마무리되며 다음 단계로 나아갈 준비가 됩니다.',
+        '오늘은 그동안의 결실을 마음껏 즐겨도 좋은 날이에요.'
+      ]
+    },
+    {
+      icon: '🦁', name: '힘', nameEn: 'Strength',
+      fortunes: [
+        '부드러움이 강함을 이깁니다. 인내심을 가지고 상황을 다독여보세요.',
+        '내면의 용기가 어려움을 헤쳐나갈 힘이 되어줄 거예요.',
+        '조급해하지 않고 꾸준히 나아가면 원하는 바를 이룰 수 있습니다.'
+      ]
+    }
+  ];
+
+  const card = document.getElementById('card');
+  const cardIcon = document.getElementById('cardIcon');
+  const cardName = document.getElementById('cardName');
+  const cardNameEn = document.getElementById('cardNameEn');
+  const fortunePanel = document.getElementById('fortunePanel');
+  const drawBtn = document.getElementById('drawBtn');
+
+  let isAnimating = false;
+  let hasDrawn = false;
+
+  drawBtn.addEventListener('click', () => {
+    if (isAnimating) return;
+    isAnimating = true;
+    drawBtn.disabled = true;
+
+    fortunePanel.classList.remove('show');
+
+    if (hasDrawn) {
+      card.classList.remove('flipped');
+    }
+
+    card.classList.add('shaking');
+
+    setTimeout(() => {
+      card.classList.remove('shaking');
+
+      const picked = CARDS[Math.floor(Math.random() * CARDS.length)];
+      const fortune = picked.fortunes[Math.floor(Math.random() * picked.fortunes.length)];
+
+      cardIcon.textContent = picked.icon;
+      cardName.textContent = picked.name;
+      cardNameEn.textContent = picked.nameEn;
+      fortunePanel.textContent = fortune;
+
+      card.classList.add('flipped');
+      hasDrawn = true;
+
+      setTimeout(() => {
+        fortunePanel.classList.add('show');
+        drawBtn.textContent = '다시 뽑기';
+        drawBtn.disabled = false;
+        isAnimating = false;
+      }, 450);
+    }, 550);
+  });
+</script>
+
+</body>
+</html>
