@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미니 플래시카드</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --text: #1f2430;
+    --text-muted: #6b7280;
+    --accent: #4f6df5;
+    --accent-hover: #3d59d9;
+    --border: #e2e5ea;
+    --back-bg: #4f6df5;
+    --back-text: #ffffff;
+    --danger: #ef4444;
+    --shadow: 0 4px 14px rgba(20, 24, 40, 0.08);
+    --shadow-hover: 0 10px 26px rgba(20, 24, 40, 0.14);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Segoe UI", system-ui, sans-serif;
+  }
+
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    margin: 0 0 28px;
+    font-size: 0.95rem;
+  }
+
+  form.add-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 36px;
+  }
+
+  form.add-form input {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  form.add-form input:focus {
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+
+  form.add-form button {
+    flex: 0 0 auto;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  form.add-form button:hover {
+    background: var(--accent-hover);
+  }
+
+  form.add-form button:active {
+    transform: scale(0.97);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 18px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 60px 20px;
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    font-size: 0.95rem;
+  }
+
+  .card-scene {
+    perspective: 1200px;
+    height: 160px;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: rotate 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+
+    &.flipped {
+      rotate: y 180deg;
+    }
+  }
+
+  .card-scene:hover .card {
+    box-shadow: var(--shadow-hover);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    border-radius: 14px;
+    backface-visibility: hidden;
+    box-shadow: var(--shadow);
+    word-break: break-word;
+    font-size: 1rem;
+    line-height: 1.5;
+
+    &.front {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    &.back {
+      background: var(--back-bg);
+      color: var(--back-text);
+      rotate: y 180deg;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 50%;
+      background: rgb(0 0 0 / 8%);
+      color: inherit;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+
+    &.front .delete-btn:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    &.back .delete-btn {
+      background: rgb(255 255 255 / 20%);
+
+      &:hover {
+        background: rgb(255 255 255 / 35%);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      transition: none;
+    }
+  }
+
+  .card-label {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>미니 플래시카드</h1>
+  <p class="subtitle">앞면(질문)과 뒷면(정답)을 입력하고, 카드를 클릭해 뒤집어 보세요.</p>
+
+  <form class="add-form" id="add-form">
+    <input type="text" id="front-input" placeholder="앞면 (질문)" autocomplete="off" required>
+    <input type="text" id="back-input" placeholder="뒷면 (정답)" autocomplete="off" required>
+    <button type="submit">추가</button>
+  </form>
+
+  <div id="card-container"></div>
+</main>
+
+<script>
+  const STORAGE_KEY = "flashcards";
+
+  const form = document.getElementById("add-form");
+  const frontInput = document.getElementById("front-input");
+  const backInput = document.getElementById("back-input");
+  const container = document.getElementById("card-container");
+
+  function loadCards() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveCards(cards) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+  }
+
+  function makeId() {
+    return (crypto.randomUUID && crypto.randomUUID()) ||
+      `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  let cards = loadCards();
+
+  function addCard(front, back) {
+    cards.push({ id: makeId(), front, back });
+    saveCards(cards);
+    render();
+  }
+
+  function deleteCard(id) {
+    cards = cards.filter((c) => c.id !== id);
+    saveCards(cards);
+    render();
+  }
+
+  function render() {
+    container.innerHTML = "";
+
+    if (cards.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "아직 카드가 없습니다. 위에서 카드를 추가해 보세요.";
+      container.appendChild(empty);
+      return;
+    }
+
+    const grid = document.createElement("div");
+    grid.className = "card-grid";
+
+    cards.forEach((card) => {
+      const scene = document.createElement("div");
+      scene.className = "card-scene";
+
+      const cardEl = document.createElement("div");
+      cardEl.className = "card";
+      cardEl.innerHTML = `
+        <div class="card-face front">
+          <span class="card-label">Q</span>
+          <span>${escapeHtml(card.front)}</span>
+          <button type="button" class="delete-btn" aria-label="삭제">&times;</button>
+        </div>
+        <div class="card-face back">
+          <span class="card-label">A</span>
+          <span>${escapeHtml(card.back)}</span>
+          <button type="button" class="delete-btn" aria-label="삭제">&times;</button>
+        </div>
+      `;
+
+      cardEl.addEventListener("click", () => {
+        cardEl.classList.toggle("flipped");
+      });
+
+      cardEl.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          deleteCard(card.id);
+        });
+      });
+
+      scene.appendChild(cardEl);
+      grid.appendChild(scene);
+    });
+
+    container.appendChild(grid);
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const front = frontInput.value.trim();
+    const back = backInput.value.trim();
+    if (!front || !back) return;
+    addCard(front, back);
+    frontInput.value = "";
+    backInput.value = "";
+    frontInput.focus();
+  });
+
+  render();
+</script>
+</body>
+</html>
