@@ -1,0 +1,82 @@
+:root {
+  /* Dell 1996 DESIGN.md tokens */
+  --primary: #e91d2a;
+  --on-primary: #ffffff;
+  --canvas: #ffffff;
+  --surface: #ffffff;
+  --ink: #000000;
+  --frame-ink: #000000;
+  --yellow-sticker: #fcc20f;
+  --link: #0000ee;
+
+  --tint-olive: #8e8a25;
+  --tint-sage: #b3bd95;
+  --tint-salmon: #d77a7a;
+  --tint-peach: #e6915d;
+  --tint-lime: #c0d4a7;
+  --tint-sky: #9ab6c8;
+  --tint-steel: #a5b8c0;
+  --tint-periwinkle: #8c9ae0;
+
+  /* app-level aliases used across components */
+  --text: #000000;
+  --text-h: #000000;
+  --bg: #ffffff;
+  --border: #000000;
+  --accent: #000000;
+  --accent-hover: #e91d2a;
+  --accent-bg: #b3bd95;
+  --danger: #e91d2a;
+  --danger-bg: #d77a7a;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: 'Times New Roman', Times, 'Apple SD Gothic Neo', 'Malgun Gothic', serif;
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: normal;
+}
+
+h1, h2, h3 {
+  color: var(--ink);
+  font-family: 'Arial Black', Helvetica, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+h2, h3 {
+  font-family: Helvetica, Arial, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: Helvetica, Arial, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  font-weight: 700;
+  border-radius: 0;
+}
+
+input {
+  font-family: 'Times New Roman', Times, 'Apple SD Gothic Neo', 'Malgun Gothic', serif;
+  border-radius: 0;
+}
+
+a {
+  color: var(--link);
+}
