@@ -160,11 +160,9 @@ function App() {
       <h1>냉장고 재료 인식 &amp; 레시피 추천</h1>
       <p className="subtitle">냉장고 사진을 업로드하면 재료를 인식하고, 그 재료로 만들 수 있는 레시피를 추천해드려요.</p>
 
-      {showAuth && !session && (
+      {!session ? (
         <AuthPanel onClose={() => setShowAuth(false)} />
-      )}
-
-      {view === 'myRecipes' ? (
+      ) : view === 'myRecipes' ? (
         <SavedRecipesView key={session?.user?.id ?? 'anon'} onBack={() => setView('main')} />
       ) : (
         <div className="card">
